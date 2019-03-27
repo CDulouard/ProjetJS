@@ -4,5 +4,21 @@
   "main": "index.js",
   "repository": "https://github.com/CDulouard/ProjetJS.git",
   "author": "CDulouard <clement.dulouard@gmail.com>",
-  "license": "MIT"
+  "license": "MIT",
+  "scripts": {
+    "start": "node index.js",
+    "test": "mocha"
+  },
+  "xo": {
+    "space": 2,
+    "prettier": true
+  },
+  "dependencies": {
+    "ramda": "^0.26.1",
+    "xo": "^0.24.0"
+  },
+  "devDependencies": {
+    "chai": "^4.2.0",
+    "mocha": "^6.0.2"
+  }
 }
