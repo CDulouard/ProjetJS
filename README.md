@@ -68,6 +68,7 @@ Ce fichier contient trois mutateurs :
   - Mutateur de population
   
 Ces mutateurs prennent en paramètre une valeur numérique qui peut être négative. Si la valeur est négative et supérieure à la quantité actuelle de ressource, ladite ressource est  bloquée à 0.
+
 *Exemple avec le mutateur d'or*
 ```js
 addGold(qt) {
@@ -147,6 +148,7 @@ convertToScientist() {
 }
 ```
 Une troupe de soldats rendand l'âme passés quelques années (cycles de jeu), la création d'une nouvelle troupe ajoutera un *setTimeout* à un tableau spécifique, qui s'autodétruira passé le délai. Une fonction encore non implémentée doit permettre, en cas de guerre par exemple, de tuer une troupe spécifique via la méthode *clearTimeout*, et *splice* (suppression d'une cellule intermédiaire d'un tableau).
+
 *Ajout d'un nouveau soldat*
 ```js
 // Set death after certain time (only 4 cycles here to avoid timeout in tests)
@@ -162,6 +164,7 @@ this.soldiers_.push(
 ### Commerce
 La fonction commerce permet d'envoyer un marchand disponible dans la nature, pendant 4 cycles, chargé de victuailles.
 Cette fonction prend en paramètre un objet, similaire à celui instancié dans le paramètre *localRessources* (cf constructeur).
+
 Par exemple, pour envoyer un marchand avec un cheval et un item de fer :
 ```js
 g = new City(...);
@@ -173,6 +176,7 @@ const items = {
 g.commerceWithOther(items);
 ```
 Ainsi, si la cité possède la quantité de ressource à envoyer, elle sera retirée de ses possession, mais augmentera ses chances de voir le marchand revenir les mains pleines. Chaque ressource envoyer augmentera une variable *increase*, qui diminuera le seuil aléatoire à partir duquel le marchand peut espérer recevoir quelque chose en retour.
+
 *Vérifie que l'objet est possédé en quantités suffisantes et le retire de la liste des possessions de la ville*
 ```js
 let increase = 0;
@@ -193,6 +197,7 @@ for (const item in props) {
 }
 ```
 *Algorithme aléatoire déterminant ce que la cité recevra en retour de son don*
+
 *On reçoit soit 3, soit 2, soit 1, soit rien du tout de la ressource prop*
 ```js
 const chances = Math.random();
@@ -205,6 +210,7 @@ if (chances > 0.9 - increase / 10) {
 }
 ```
 Un marchand peut mourir. Dans ce cas, la population diminue d'un membre, perd un point d'économie et voit son bonheur diminuer d'un point.
+
 *Note : le marchand est supprimé le temps de son voyage, mais compte toujours dans la population.*
 ```js
 this.population_--;
