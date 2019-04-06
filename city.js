@@ -158,6 +158,148 @@ class City {
     });
   }
 
+  commerceWithOther(items) {
+    return new Promise((resolve, reject) => {
+      if (
+        this.merchant_ > 0 &&
+        typeof items === 'object' &&
+        !Array.isArray(items)
+      ) {
+        this.merchant_--;
+        let increase = 0;
+        const props = Object.getOwnPropertyNames(items);
+
+        // The more you give the more you get
+        for (const item in props) {
+          if (
+            Object.prototype.hasOwnProperty.call(
+              this.localRessources_,
+              props[item]
+            ) &&
+            this.localRessources_[item] >= items[item]
+          ) {
+            this.localRessources_[item] -= items[item];
+            increase += items[item];
+          }
+        }
+
+        let alive = true;
+
+        // Merchant left
+        this.worldEvents.emit('commerceEngaged', {
+          population: this.population_,
+          merchant: this.merchant_
+        });
+
+        // Merchant come back if not dead
+        setTimeout(() => {
+          if (Math.random() < 0.9) {
+            this.merchant_++;
+            for (const prop in this.localRessources_) {
+              if (
+                Object.prototype.hasOwnProperty.call(
+                  this.localRessources_,
+                  prop
+                )
+              ) {
+                const chances = Math.random();
+                if (chances > 0.9 - increase / 10) {
+                  this.localRessources_[prop][0] += 3;
+                } else if (chances > 0.8 - increase / 10) {
+                  this.localRessources_[prop][0] += 2;
+                } else if (chances > 0.7 - increase / 10) {
+                  this.localRessources_[prop][0] += 1;
+                }
+              }
+            }
+          } else {
+            this.population_--;
+            this.hapiness_--;
+            alive = false;
+          }
+
+          this.worldEvents.emit('hasCommerce', {
+            alive,
+            population: this.population_,
+            merchant: this.merchant_
+          });
+        }, this.timeFactor_ * 2);
+
+        resolve();
+      } else if (this.merchant_ === 0) {
+        reject(new Error("You don't have any merchant left."));
+      } else {
+        reject(new Error('Wrong parameter, must be an object.'));
+      }
+    });
+  }
+
+  addGold(qt) {
+    return new Promise((resolve, reject) => {
+      if (typeof qt === 'number') {
+        if (this.gold_ + qt > 0) {
+          this.gold_ += qt;
+        } else {
+          this.gold_ = 0;
+        }
+
+        resolve();
+      } else {
+        reject(new Error('Wrong parameter type'));
+      }
+    });
+  }
+
+  addCorn(qt) {
+    return new Promise((resolve, reject) => {
+      if (typeof qt === 'number') {
+        if (this.corn_ + qt > 0) {
+          this.corn_ += qt;
+        } else {
+          this.corn_ = 0;
+        }
+
+        resolve();
+      } else {
+        reject(new Error('Wrong parameter type'));
+      }
+    });
+  }
+
+  addPopulation(qt) {
+    return new Promise((resolve, reject) => {
+      if (typeof qt === 'number') {
+        if (this.population_ + qt > 0) {
+          this.population_ += qt;
+
+          while (
+            this.population_ <
+            this.scientist_ + this.merchant_ + 3 * this.soldiers_.length
+          ) {
+            // Random kill if too many
+            if (Math.random() < 0.7 && this.soldiers_.length > 0) {
+              clearTimeout(this.soldiers_[this.soldiers_.length - 1]);
+              this.soldiers_.pop();
+            } else if (Math.random() > 0.5 && this.merchant_ > 0) {
+              this.merchant_--;
+            } else if (this.scientist_ > 0) {
+              this.scientist_--;
+            }
+          }
+        } else {
+          this.population_ = 0;
+          this.soldiers_ = [];
+          this.merchant_ = 0;
+          this.scientist_ = 0;
+        }
+
+        resolve();
+      } else {
+        reject(new Error('Wrong parameter type'));
+      }
+    });
+  }
+
   get population() {
     return this.population_;
   }
