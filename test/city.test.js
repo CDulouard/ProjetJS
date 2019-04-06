@@ -187,4 +187,91 @@ describe('world-worldEvents_.js', () => {
       });
     });
   });
+
+  // Phase 4 : does errors handle and setters
+  describe('Errors', async () => {
+    let g;
+
+    before(() => {
+      g = new City('DatenCity', 'KusoNoTenshi', 100);
+    });
+
+    after(() => {
+      g.endWorld();
+    });
+
+    it("Should have updated city's ressources", async () => {
+      await g.addCorn(1000);
+      g.corn.should.be.equal(1100);
+
+      await g.addCorn(-10000);
+      g.corn.should.be.equal(0);
+
+      await g.addGold(1000);
+      g.gold.should.be.equal(1100);
+
+      await g.addGold(-10000);
+      g.gold.should.be.equal(0);
+
+      await g.addPopulation(1000);
+      g.population.should.be.equal(1010);
+
+      await g.addPopulation(-10000);
+      g.population.should.be.equal(0);
+    });
+
+    it("Shouldn't be able to recruit new workers", async () => {
+      await g
+        .convertToScientist()
+        .should.be.rejectedWith(
+          Error,
+          /Not enough ressources. You need 1 population and 40 corn. Current population available : 0. Current corn : 0./
+        );
+
+      await g
+        .convertToMerchant()
+        .should.be.rejectedWith(
+          Error,
+          /Not enough ressources. You need 1 population and 40 gold. Current population available : 0. Current gold : 0./
+        );
+
+      await g
+        .enroleSoldiers()
+        .should.be.rejectedWith(
+          Error,
+          'Not enough ressources. You need 3 population, 30 corn and 30 gold. Current population available : 0. Current corn : 0 Current gold : 0.'
+        );
+
+      await g
+        .commerceWithOther({})
+        .should.be.rejectedWith(Error, /You don't have any merchant left./);
+    });
+
+    it('Should reject wrong function calls', async () => {
+      await g
+        .addCorn('gimme food')
+        .should.be.rejectedWith(Error, /Wrong parameter type/);
+
+      await g
+        .addGold('gimme money')
+        .should.be.rejectedWith(Error, /Wrong parameter type/);
+
+      await g
+        .addPopulation("kill'em all")
+        .should.be.rejectedWith(Error, /Wrong parameter type/);
+
+      g.merchant.should.be.equal(0);
+      g.scientist.should.be.equal(0);
+      g.soldiers.length.should.be.equal(0);
+
+      await g.addCorn(1000);
+      await g.addGold(1000);
+      await g.addPopulation(1000);
+      await g.convertToMerchant();
+
+      await g
+        .commerceWithOther(['prostitute', 100])
+        .should.be.rejectedWith(Error, /Wrong parameter, must be an object./);
+    });
+  });
 });
