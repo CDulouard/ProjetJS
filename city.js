@@ -222,7 +222,7 @@ class City {
           }
 
           this.worldEvents.emit('hasCommerce', {
-            alive,
+            alive: alive,
             population: this.population_,
             merchant: this.merchant_
           });
