@@ -96,4 +96,43 @@ describe('world-worldEvents_.js', () => {
       });
     });
   });
+
+  // Phase 2 : test the enrolements and population
+  describe('Enrole and Population', () => {
+    let g;
+
+    // No events this time
+    before(() => {
+      g = new City('Daten City', 'KusoNoTenshi', 100);
+    });
+
+    after(() => {
+      g.endWorld();
+    });
+
+    it("should update city's population", async () => {
+      g.scientist.should.be.equal(1);
+      g.merchant.should.be.equal(1);
+      g.soldiers.length.should.be.equal(0);
+
+      await g.convertToScientist();
+      g.scientist.should.be.equal(2);
+
+      await g.convertToMerchant();
+      g.merchant.should.be.equal(2);
+
+      await g.enroleSoldiers();
+      g.soldiers.length.should.be.equal(1);
+    });
+
+    it('should have killed the old warriors', async done => {
+      await new Promise(resolve => {
+        g.worldEvents.on('soldierDeath', soldierDeath => {
+          soldierDeath.soldiers.should.be.equal(0);
+          resolve();
+        });
+        done();
+      });
+    });
+  });
 });
