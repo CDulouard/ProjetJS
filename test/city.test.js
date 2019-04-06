@@ -135,4 +135,56 @@ describe('world-worldEvents_.js', () => {
       });
     });
   });
+
+  // Phase 3 : test the commerce
+  describe('Commerce', async () => {
+    let g;
+
+    before(() => {
+      g = new City('Daten City', 'KusoNoTenshi', 100);
+      g.init();
+    });
+
+    after(() => {
+      g.endWorld();
+    });
+
+    it('should have emitted taxes', async done => {
+      await new Promise(resolve => {
+        g.worldEvents.on('taxes', () => {
+          g.commerceWithOther({iron: 1, horses: 1});
+          resolve();
+        });
+        done();
+      });
+    });
+
+    it('should have engaged commerce', async done => {
+      await new Promise(resolve => {
+        g.worldEvents.on('commerceEngaged', commerceEngaged => {
+          commerceEngaged.population.shoud.be.equal(10);
+          commerceEngaged.merchant.should.be.equal(0);
+          resolve();
+        });
+        done();
+      });
+    });
+
+    it('should have come back or died', async done => {
+      await new Promise(resolve => {
+        g.worldEvents.on('hasCommerce', hasCommerce => {
+          if (hasCommerce.alive) {
+            hasCommerce.population.shoud.be.equal(10);
+            hasCommerce.merchant.should.be.equal(1);
+          } else {
+            hasCommerce.population.shoud.be.equal(9);
+            hasCommerce.merchant.should.be.equal(0);
+          }
+
+          resolve();
+        });
+        done();
+      });
+    });
+  });
 });
