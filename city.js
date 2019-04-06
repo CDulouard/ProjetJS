@@ -78,6 +78,86 @@ class City {
     }, 10 * this.timeFactor_);
   }
 
+  convertToScientist() {
+    return new Promise((resolve, reject) => {
+      if (
+        this.population_ >
+          this.scientist_ + this.soldiers_.length * 3 + this.merchant_ &&
+        this.corn_ > 40
+      ) {
+        this.scientist_++;
+        this.corn_ -= 40;
+        resolve();
+      } else {
+        reject(
+          new Error(
+            `Not enough ressources. You need 1 population and 40 corn. Current population available : ${
+              this.population_
+            }. Current corn : ${this.corn_}.`
+          )
+        );
+      }
+    });
+  }
+
+  convertToMerchant() {
+    return new Promise((resolve, reject) => {
+      if (
+        this.population_ >
+          this.scientist_ + this.soldiers_.length * 3 + this.merchant_ &&
+        this.gold_ > 40
+      ) {
+        this.merchant_++;
+        this.gold_ -= 40;
+        resolve();
+      } else {
+        reject(
+          new Error(
+            `Not enough ressources. You need 1 population and 40 gold. Current population available : ${
+              this.population_
+            }. Current gold : ${this.gold_}.`
+          )
+        );
+      }
+    });
+  }
+
+  enroleSoldiers() {
+    return new Promise((resolve, reject) => {
+      if (
+        this.population_ >
+          this.scientist_ + this.soldiers_.length * 3 + this.merchant_ + 3 &&
+        this.gold_ > 30 &&
+        this.corn_ > 30
+      ) {
+        this.gold_ -= 30;
+        this.corn_ -= 30;
+
+        const pos = this.soldiers_.length;
+
+        // Set death after certain time (only 4 cycles here to avoid timeout in tests)
+        this.soldiers_.push(
+          setTimeout(() => {
+            this.soldiers_.splice(pos, 1);
+            this.worldEvents.emit('soldierDeath', {
+              soldiers: this.soldiers_.length
+            });
+          }, this.timeFactor_ * 4)
+        );
+
+        resolve();
+      } else {
+        reject(
+          new Error(
+            `Not enough ressources. You need 3 population, 30 corn and 30 gold. Current population available : ${
+              this.population_
+            }. Current corn : ${this.corn_} Current gold : ${this.gold_}.`
+          )
+        );
+      }
+    });
+  }
+
   get population() {
     return this.population_;
   }
