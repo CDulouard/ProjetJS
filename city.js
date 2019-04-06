@@ -86,6 +86,7 @@ class City {
         this.corn_ > 40
       ) {
         this.scientist_++;
+        this.science_++;
         this.corn_ -= 40;
         resolve();
       } else {
@@ -108,6 +109,7 @@ class City {
         this.gold_ > 40
       ) {
         this.merchant_++;
+        this.business_++;
         this.gold_ -= 40;
         resolve();
       } else {
@@ -214,6 +216,7 @@ class City {
             }
           } else {
             this.population_--;
+            this.business_--;
             this.hapiness_--;
             alive = false;
           }
@@ -282,7 +285,9 @@ class City {
               this.soldiers_.pop();
             } else if (Math.random() > 0.5 && this.merchant_ > 0) {
               this.merchant_--;
+              this.business_--;
             } else if (this.scientist_ > 0) {
+              this.science_--;
               this.scientist_--;
             }
           }
