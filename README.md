@@ -118,7 +118,8 @@ Les valeurs suivantes peuvent être accédées :
 Les fonctions d'enrolement permettent de convertir des citoyens à un rôle spécifique : marchand, scientifique ou soldat (groupes de 3). Chaque rôle a un coût :
   - Les scientifiques coûtent 40 de blé
   - Les marchands coûtent 40 d'or
-  - Une garnison de 3 soldats coûte 30 de blé et 30 d'or
+  - Une garnison de 3 soldats coûte 30 de blé et 30 d'or.
+
 Chaque enrôleur vérifie au préalable que le nombre de ressources nécessaire est disponible, et renvoie un message d'erreur sinon, en indiquant les ressources disponibles comparées aux ressources nécessaires.
 ```js
 convertToScientist() {
@@ -226,5 +227,5 @@ this.worldEvents.emit('hasCommerce', {
   merchant: this.merchant_
 });
 ```
-## License
+## Licence
 [MIT](https://choosealicense.com/licenses/mit/)
