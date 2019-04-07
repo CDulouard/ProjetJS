@@ -188,6 +188,28 @@ describe('world-worldEvents_.js', () => {
     });
   });
 
+  // Phase 4 : kill soldiers early
+  describe('Kill soldiers early in the battle', async () => {
+    let g;
+
+    before(() => {
+      g = new City('DatenCity', 'KusoNoTenshi', 100);
+    });
+
+    after(() => {
+      g.endWorld();
+    });
+
+    it('should have killed the old warriors', async () => {
+      await g.addPopulation(1000);
+      await g.addGold(1000);
+      await g.addCorn(1000);
+      await g.enroleSoldiers();
+      await g.killSoldier(0);
+      g.soldiers.length.should.be.equal(0);
+    });
+  });
+
   // Phase 5 : does errors handle and setters
   describe('Errors', async () => {
     let g;
