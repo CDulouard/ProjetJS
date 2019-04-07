@@ -188,6 +188,28 @@ describe('world-worldEvents_.js', () => {
     });
   });
 
+  // Phase 4 : kill soldiers early
+  describe('Kill soldiers early in the battle', async () => {
+    let g;
+
+    before(() => {
+      g = new City('DatenCity', 'KusoNoTenshi', 100);
+    });
+
+    after(() => {
+      g.endWorld();
+    });
+
+    it('should have killed the old warriors', async () => {
+      await g.addPopulation(1000);
+      await g.addGold(1000);
+      await g.addCorn(1000);
+      await g.enroleSoldiers();
+      await g.killSoldier(0);
+      g.soldiers.length.should.be.equal(0);
+    });
+  });
+
   // Phase 5 : does errors handle and setters
   describe('Errors', async () => {
     let g;
@@ -245,6 +267,13 @@ describe('world-worldEvents_.js', () => {
       await g
         .commerceWithOther({})
         .should.be.rejectedWith(Error, /You don't have any merchant left./);
+
+      await g
+        .killSoldier(0)
+        .should.be.rejectedWith(
+          Error,
+          /Out of range : this garnison doesn't exist./
+        );
     });
 
     it('Should reject wrong function calls', async () => {
@@ -259,6 +288,20 @@ describe('world-worldEvents_.js', () => {
       await g
         .addPopulation("kill'em all")
         .should.be.rejectedWith(Error, /Wrong parameter type/);
+
+      await g
+        .killSoldier('mama mia!')
+        .should.be.rejectedWith(
+          Error,
+          /TypeError : parameter should be a positive number/
+        );
+
+      await g
+        .killSoldier(-1)
+        .should.be.rejectedWith(
+          Error,
+          /TypeError : parameter should be a positive number/
+        );
 
       g.merchant.should.be.equal(0);
       g.scientist.should.be.equal(0);

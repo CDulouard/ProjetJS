@@ -294,7 +294,7 @@ class City {
         } else {
           this.population_ = 0;
           for (const i in this.soldiers_) {
-            this.killSoldier(i);
+            if (i > 0) this.killSoldier(i);
           }
 
           this.merchant_ = 0;
