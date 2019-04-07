@@ -53,9 +53,9 @@ class Divinity {
         }, 4 * this.timeFactor * Math.random());
       } else {
         reject(
-            new Error(
-                `You didn't gave a number of corn to ${this.name}, Earth collapsed`
-            )
+          new Error(
+            `You didn't gave a number of corn to ${this.name}, Earth collapsed`
+          )
         );
       }
     });
@@ -71,9 +71,9 @@ class Divinity {
         }, 4 * this.timeFactor * Math.random());
       } else {
         reject(
-            new Error(
-                `You didn't gave a number of gold to ${this.name}, Earth collapsed`
-            )
+          new Error(
+            `You didn't gave a number of gold to ${this.name}, Earth collapsed`
+          )
         );
       }
     });
