@@ -267,6 +267,13 @@ describe('world-worldEvents_.js', () => {
       await g
         .commerceWithOther({})
         .should.be.rejectedWith(Error, /You don't have any merchant left./);
+
+      await g
+        .killSoldier(0)
+        .should.be.rejectedWith(
+          Error,
+          /Out of range : this garnison doesn't exist./
+        );
     });
 
     it('Should reject wrong function calls', async () => {
@@ -281,6 +288,20 @@ describe('world-worldEvents_.js', () => {
       await g
         .addPopulation("kill'em all")
         .should.be.rejectedWith(Error, /Wrong parameter type/);
+
+      await g
+        .killSoldier('mama mia!')
+        .should.be.rejectedWith(
+          Error,
+          /TypeError : parameter should be a positive number/
+        );
+
+      await g
+        .killSoldier(-1)
+        .should.be.rejectedWith(
+          Error,
+          /TypeError : parameter should be a positive number/
+        );
 
       g.merchant.should.be.equal(0);
       g.scientist.should.be.equal(0);
