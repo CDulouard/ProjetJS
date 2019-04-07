@@ -147,7 +147,7 @@ convertToScientist() {
   });
 }
 ```
-Une troupe de soldats rendand l'âme passés quelques années (cycles de jeu), la création d'une nouvelle troupe ajoutera un *setTimeout* à un tableau spécifique, qui s'autodétruira passé le délai. Une fonction encore non implémentée doit permettre, en cas de guerre par exemple, de tuer une troupe spécifique via la méthode *clearTimeout*, et *splice* (suppression d'une cellule intermédiaire d'un tableau).
+Une troupe de soldats rendand l'âme passés quelques années (cycles de jeu), la création d'une nouvelle troupe ajoutera un *setTimeout* à un tableau spécifique, qui s'autodétruira passé le délai. Une fonction permet, en cas de guerre par exemple, de tuer une troupe spécifique via la méthode *clearTimeout*, et *splice* (suppression d'une cellule intermédiaire d'un tableau).
 
 *Ajout d'un nouveau soldat*
 ```js
@@ -160,6 +160,28 @@ this.soldiers_.push(
     });
   }, this.timeFactor_ * 4)
 );
+```
+
+*Décès d'une troupe*
+```js
+killSoldier(pos) {
+  return new Promise((resolve, reject) => {
+    if (typeof pos === 'number' && pos >= 0) {
+      if (pos < this.soldiers_.length) {
+        clearTimeout(this.soldiers_[pos]);
+        this.soldiers_.splice(pos, 1);
+        this.worldEvents.emit('soldierDeath', {
+          soldiers: this.soldiers_.length
+        });
+        resolve();
+      } else {
+        reject(new Error("Out of range : this garnison doesn't exist."));
+      }
+    } else {
+      reject(new Error('TypeError : parameter should be a positive number'));
+    }
+  });
+}
 ```
 ### Commerce
 La fonction commerce permet d'envoyer un marchand disponible dans la nature, pendant 4 cycles, chargé de victuailles.
