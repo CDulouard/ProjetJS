@@ -86,6 +86,7 @@ class City {
         this.corn_ > 40
       ) {
         this.scientist_++;
+        this.science_++;
         this.corn_ -= 40;
         resolve();
       } else {
@@ -108,6 +109,7 @@ class City {
         this.gold_ > 40
       ) {
         this.merchant_++;
+        this.business_++;
         this.gold_ -= 40;
         resolve();
       } else {
@@ -214,6 +216,7 @@ class City {
             }
           } else {
             this.population_--;
+            this.business_--;
             this.hapiness_--;
             alive = false;
           }
@@ -282,13 +285,18 @@ class City {
               this.soldiers_.pop();
             } else if (Math.random() > 0.5 && this.merchant_ > 0) {
               this.merchant_--;
+              this.business_--;
             } else if (this.scientist_ > 0) {
+              this.science_--;
               this.scientist_--;
             }
           }
         } else {
           this.population_ = 0;
-          this.soldiers_ = [];
+          for (const i in this.soldiers_) {
+            this.killSoldier(i);
+          }
+
           this.merchant_ = 0;
           this.scientist_ = 0;
         }
@@ -296,6 +304,25 @@ class City {
         resolve();
       } else {
         reject(new Error('Wrong parameter type'));
+      }
+    });
+  }
+
+  killSoldier(pos) {
+    return new Promise((resolve, reject) => {
+      if (typeof pos === 'number' && pos >= 0) {
+        if (pos < this.soldiers_.length) {
+          clearTimeout(this.soldiers_[pos]);
+          this.soldiers_.splice(pos, 1);
+          this.worldEvents.emit('soldierDeath', {
+            soldiers: this.soldiers_.length
+          });
+          resolve();
+        } else {
+          reject(new Error("Out of range : this garnison doesn't exist."));
+        }
+      } else {
+        reject(new Error('TypeError : parameter should be a positive number'));
       }
     });
   }

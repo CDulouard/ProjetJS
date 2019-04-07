@@ -1,8 +1,9 @@
 {
-  "name": "JsRamda",
+  "name": "projetjs",
   "version": "1.0.0",
   "main": "divinity.js",
   "license": "MIT",
+  "author": "Dulouard Billerot Vincent",
   "scripts": {
     "start": "node divinity.js",
     "test": "mocha"
@@ -20,4 +21,3 @@
     "xo": "^0.24.0"
   }
 }
-
